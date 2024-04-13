@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "cmd/http/queries.sql"
+    schema: "cmd/http/schema.sql"
+    gen:
+      go:
+        package: "repository"
+        out: "internal/adapter/storage/sqlite/repository"
+        sql_package: "pgx/v5"
