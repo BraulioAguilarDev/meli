@@ -2,10 +2,9 @@ package service
 
 import (
 	"context"
-	"encoding/csv"
-	"errors"
 	"fmt"
 	c "meli/internal/adapter/config"
+	"meli/internal/adapter/reader"
 	"meli/internal/core/domain"
 	"meli/internal/core/port"
 	"meli/pkg/melihttp"
@@ -31,26 +30,20 @@ func (srv *baseService) CreateItem(ctx context.Context, item *domain.Item) (*dom
 }
 
 func (srv *baseService) UploadFile(ctx context.Context, uploadFile *domain.UploadFile) error {
-	if uploadFile.File.Header.Get("Content-Type") != "text/csv" {
-		return errors.New("file is not a CSV file")
-	}
-
-	file, err := uploadFile.File.Open()
-	if err != nil {
-		return err
-	}
-
-	reader := csv.NewReader(file)
-	data, err := reader.ReadAll()
+	records, err := reader.ReadFileByType(uploadFile.File)
 	if err != nil {
 		return err
 	}
 
 	rows := make([]domain.Row, 0)
-	for _, row := range data {
+	for i, record := range records {
+		if i == 0 {
+			continue
+		}
+
 		rows = append(rows, domain.Row{
-			Site: row[0],
-			ID:   row[1],
+			Site: record[0],
+			ID:   record[1],
 		})
 	}
 
