@@ -27,6 +27,11 @@ type (
 		App  *App
 		DB   *DB
 		HTTP *HTTP
+		Meli *Meli
+	}
+
+	Meli struct {
+		URL string
 	}
 )
 
@@ -53,7 +58,11 @@ func New() (*Container, error) {
 		AllowedOrigins: os.Getenv("HTTP_ALLOWED_ORIGINS"),
 	}
 
+	meli := &Meli{
+		URL: "https://api.mercadolibre.com",
+	}
+
 	return &Container{
-		app, db, http,
+		app, db, http, meli,
 	}, nil
 }

@@ -12,4 +12,5 @@ type ItemResopitory interface {
 
 type ItemService interface {
 	CreateItem(context.Context, *domain.Item) (*domain.Item, error)
+	UploadFile(context.Context, *domain.UploadFile) error
 }

@@ -4,15 +4,11 @@
 
 package repository
 
-import (
-	"github.com/jackc/pgx/v5/pgtype"
-)
-
 type Item struct {
-	ID          int32
+	ID          string
 	Site        string
 	Price       string
-	SmartTime   pgtype.Timestamp
+	SmartTime   string
 	Name        string
 	Description string
 	Nickname    string

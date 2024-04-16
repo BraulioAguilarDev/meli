@@ -6,7 +6,7 @@ import (
 	"log"
 	"meli/internal/adapter/config"
 	"meli/internal/adapter/handler/http"
-	"meli/internal/adapter/storage/sqlite/repository"
+	"meli/internal/adapter/storage/postgres/repository"
 	"meli/internal/core/service"
 
 	"github.com/jackc/pgx/v5"
@@ -34,7 +34,7 @@ func main() {
 
 	queries := repository.New(db)
 	itemRepository := repository.NewItemRepository(queries)
-	itemService := service.ProvideItemService(itemRepository)
+	itemService := service.ProvideBaseService(itemRepository, config.Meli.URL)
 	itemHandler := http.ProvideItemHandler(itemService)
 
 	router, err := http.NewRouter(config.HTTP, *itemHandler)

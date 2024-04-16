@@ -30,7 +30,7 @@ func NewRouter(
 	{
 		items := v1.Group("/items")
 		{
-			items.GET("/", itemHandler.CreateItem)
+			items.POST("/upload-file", itemHandler.UploadFile)
 		}
 	}
 

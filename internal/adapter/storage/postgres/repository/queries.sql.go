@@ -7,8 +7,6 @@ package repository
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createItem = `-- name: CreateItem :one
@@ -21,10 +19,10 @@ RETURNING id, site, price, smart_time, name, description, nickname
 `
 
 type CreateItemParams struct {
-	ID          int32
+	ID          string
 	Site        string
 	Price       string
-	SmartTime   pgtype.Timestamp
+	SmartTime   string
 	Name        string
 	Description string
 	Nickname    string

@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS items (
   id          INTEGER PRIMARY KEY,
-  site        TEXT NOT NULL,
-  price       TEXT NOT NULL,
-  smart_time  TIMESTAMP NOT NULL,
-  name        TEXT NOT NULL,
-  description TEXT NOT NULL,
-  nickname    TEXT NOT NULL
+  site        VARCHAR(100) NOT NULL,
+  price       VARCHAR(100) NOT NULL,
+  smart_time  VARCHAR(100) NOT NULL,
+  name        VARCHAR(100) NOT NULL,
+  description VARCHAR(100) NOT NULL,
+  nickname    VARCHAR(100) NOT NULL
 );

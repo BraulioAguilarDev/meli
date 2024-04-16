@@ -1,16 +1,14 @@
 package domain
 
 import (
-	"time"
-
 	"github.com/shopspring/decimal"
 )
 
 type Item struct {
-	ID          uint
+	ID          string
 	Site        string
 	Price       decimal.Decimal
-	StartTime   time.Time
+	StartTime   string
 	Name        string
 	Description string
 	Nickname    string

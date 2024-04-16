@@ -3,9 +3,6 @@ package repository
 import (
 	"context"
 	"meli/internal/core/domain"
-	"time"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type itemRepository struct {
@@ -20,11 +17,11 @@ func NewItemRepository(queries *Queries) *itemRepository {
 
 func (repo *itemRepository) CreateItem(ctx context.Context, item *domain.Item) (*domain.Item, error) {
 
-	itemCreated, err := repo.queries.CreateItem(ctx, CreateItemParams{
-		ID:          int32(item.ID),
+	_, err := repo.queries.CreateItem(ctx, CreateItemParams{
+		ID:          item.ID,
 		Site:        item.Site,
 		Price:       item.Price.String(),
-		SmartTime:   pgtype.Timestamp{Time: time.Now()},
+		SmartTime:   item.StartTime,
 		Name:        item.Name,
 		Description: item.Description,
 		Nickname:    item.Nickname,
@@ -34,6 +31,5 @@ func (repo *itemRepository) CreateItem(ctx context.Context, item *domain.Item) (
 		return nil, err
 	}
 
-	item.StartTime = itemCreated.SmartTime.Time
 	return item, nil
 }
