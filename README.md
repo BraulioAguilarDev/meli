@@ -20,7 +20,7 @@ $ cp .env.example .env
 $ make docker
 ```
 
-## Docker Compose
+## Docker compose
 ```sh
 # Creating container
 $ make dc-up
@@ -43,4 +43,27 @@ $ make build && make dc-up
 # Call upload file endpoint
 $ curl --location 'http://localhost:8080/v1/items/upload-file' \
 --form 'file=@"$(pwd)/meli/technical_challenge_data.csv"'
+```
+
+### Request by Postman/Insomnia
+
+#### Endpoint
+`POST: http://localhost:8080/v1/items/upload-file`
+
+![http request](/assets/image/request.png "Request example")
+
+#### Success
+```json
+{
+    "success": true,
+    "message": "File has been processed successfully"
+}
+```
+
+#### Errors
+```json
+{
+    "success": false,
+    "message": "some error message"
+}
 ```
