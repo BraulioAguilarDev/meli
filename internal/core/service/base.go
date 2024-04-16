@@ -12,24 +12,33 @@ import (
 )
 
 var (
-	MaxConcurrency = 10
+	MaxConcurrency = 10 // Maximum number of concurrent goroutines
 )
 
+/**
+ * baseService implements port.ItemService interface
+ * and provides an access to the item repository
+ */
 type baseService struct {
 	repository port.ItemResopitory
 }
 
+// ProvideBaseService creates a new item service instance
 func ProvideBaseService(repo port.ItemResopitory) *baseService {
 	return &baseService{
 		repo,
 	}
 }
 
+// CreateItem saves a item
 func (srv *baseService) CreateItem(ctx context.Context, item *domain.Item) (*domain.Item, error) {
 	return srv.repository.CreateItem(ctx, item)
 }
 
+// UploadFile process a file then save it if all is ok
 func (srv *baseService) UploadFile(ctx context.Context, uploadFile *domain.UploadFile) error {
+
+	// ReadFileByType executes the reading according file received
 	records, err := reader.ReadFileByType(uploadFile.File)
 	if err != nil {
 		return err
@@ -47,6 +56,12 @@ func (srv *baseService) UploadFile(ctx context.Context, uploadFile *domain.Uploa
 		})
 	}
 
+	/*
+	 Pass `rows` data to Queries function for calling APIs
+	 Item, Category, Seller, Currency
+
+	 Item is the main request becouse then we need info as category_id, currency_id, etc
+	*/
 	if err := srv.Queries(ctx, rows); err != nil {
 		return err
 	}
@@ -54,11 +69,13 @@ func (srv *baseService) UploadFile(ctx context.Context, uploadFile *domain.Uploa
 	return nil
 }
 
+// Queries call external API by goroutines
 func (srv *baseService) Queries(ctx context.Context, rows []domain.Row) error {
 	fetchers := []port.QueryFetcher{
 		CategoryFetcher{fmt.Sprintf("%s/categories", c.Config.API.URL)},
 		CurrencyFetcher{fmt.Sprintf("%s/currencies", c.Config.API.URL)},
 		SellerFetcher{fmt.Sprintf("%s/users", c.Config.API.URL)},
+		// Adding new queryFetch...
 	}
 
 	itmCh := make(chan domain.Item, MaxConcurrency)
@@ -67,13 +84,15 @@ func (srv *baseService) Queries(ctx context.Context, rows []domain.Row) error {
 
 	go fetchURL(rows, fetchers, itmCh, errCh, client)
 
+	// Reading channels
 	for {
 		select {
 		case result, ok := <-itmCh:
 			if !ok {
 				return nil
 			}
-			_, err := srv.repository.CreateItem(ctx, &result)
+			// Saving a item in db
+			_, err := srv.repository.CreateItem(ctx, &result) // TODO: Save in bulk
 			if err != nil {
 				fmt.Printf("creatting item in db error: %v\n", err.Error())
 			}
@@ -81,7 +100,7 @@ func (srv *baseService) Queries(ctx context.Context, rows []domain.Row) error {
 			if !ok {
 				return nil
 			}
-			fmt.Println("Error:", err)
+			fmt.Println("Error:", err) // TODO: Adding retry
 		}
 	}
 }
@@ -97,9 +116,9 @@ func fetchURL(rows []domain.Row, fetchers []port.QueryFetcher, itmCh chan domain
 		go func(row domain.Row) {
 			defer wg.Done()
 
-			sem <- struct{}{}
+			sem <- struct{}{} // Acquire a semaphore
 			defer func() {
-				<-sem
+				<-sem // release semaphore
 			}()
 
 			// Getting main data

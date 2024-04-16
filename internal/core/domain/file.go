@@ -2,7 +2,7 @@ package domain
 
 import "mime/multipart"
 
-// Entity on parsing file
+// Row is an entity that represents a Line/Row on reading file
 type Row struct {
 	Site string
 	ID   string

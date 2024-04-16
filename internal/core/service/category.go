@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Implementing for /categories API
 type CategoryFetcher struct {
 	Path string
 }
@@ -17,6 +18,7 @@ type CategoryResponse struct {
 	Name string `json:"name,omitempty"`
 }
 
+// Fetch executes call to /categories then fills at CategoryResponse
 func (caf CategoryFetcher) Fetch(client *melihttp.Request, row map[string]string) (map[string]string, error) {
 	options := &melihttp.Options{
 		Method:   http.MethodGet,

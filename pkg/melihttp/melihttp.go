@@ -6,12 +6,18 @@ import (
 	"time"
 )
 
+// Params for building request
 type Options struct {
 	Endpoint string
 	Method   string
 	Headers  map[string]string
 }
 
+type Request struct {
+	Client *http.Client
+}
+
+// NewClient is a new Request instance
 func NewClient() *Request {
 	return &Request{
 		Client: &http.Client{
@@ -20,10 +26,7 @@ func NewClient() *Request {
 	}
 }
 
-type Request struct {
-	Client *http.Client
-}
-
+// MakeRequest execute http request to any service
 func (r *Request) MakeRequest(o *Options) (*http.Response, error) {
 	req, err := http.NewRequest(o.Method, o.Endpoint, bytes.NewBuffer(nil))
 	if err != nil {

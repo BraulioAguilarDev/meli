@@ -27,11 +27,12 @@ func (f Format) String() string {
 	}
 }
 
-// FileReader is an interface for interacting with file process acording config
+// FileReader is an interface for interacting with file process acording ext file
 type FileReader interface {
 	Read() ([][]string, error)
 }
 
+// ReadFileByType executes reading process according file type
 func ReadFileByType(file *multipart.FileHeader) ([][]string, error) {
 	var reader FileReader
 

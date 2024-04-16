@@ -5,6 +5,7 @@ import (
 	"mime/multipart"
 )
 
+// Implementing for CSV files
 type CSVReader struct {
 	file      *multipart.FileHeader
 	separator rune

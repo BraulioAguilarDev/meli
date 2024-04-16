@@ -8,15 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Router is a wrapper for HTTP router
 type Router struct {
 	*gin.Engine
 }
 
+// NewRouter creates a new HTTP router
 func NewRouter(config *config.HTTP, itemHandler ItemHdlr) (*Router, error) {
+	// Disable debug mode in production
 	if config.Env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	// CORS
 	ginConfig := cors.DefaultConfig()
 	ginConfig.AllowOrigins = strings.Split(config.AllowedOrigins, ",")
 
@@ -36,6 +40,7 @@ func NewRouter(config *config.HTTP, itemHandler ItemHdlr) (*Router, error) {
 	}, nil
 }
 
+// Serve starts the http server
 func (r *Router) Serve(addr string) error {
 	return r.Run(addr)
 }

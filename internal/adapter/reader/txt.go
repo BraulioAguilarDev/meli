@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Implementing for txt files
 type TextFileReader struct {
 	file *multipart.FileHeader
 }

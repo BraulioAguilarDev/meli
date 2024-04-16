@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 )
 
+// Implementing for XML files
 type XMLFileReader struct {
 	file *multipart.FileHeader
 }

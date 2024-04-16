@@ -9,6 +9,7 @@ import (
 
 var Config *Container
 
+// Container contains environment variables for the application, database and http server
 type (
 	App struct {
 		Name string
@@ -39,6 +40,7 @@ type (
 	}
 )
 
+// Initialize new container instance
 func init() {
 	if os.Getenv("APP_ENV") != "production" {
 		if err := godotenv.Load(); err != nil {

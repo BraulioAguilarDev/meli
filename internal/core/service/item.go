@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Implementing for /items API
 type ItemFetcher struct {
 	Path string
 }
@@ -27,6 +28,7 @@ type ItemResponse struct {
 	}
 }
 
+// Fetch executes call to /items then fills at ItemResponse
 func (itf ItemFetcher) Fetch(client *melihttp.Request, row map[string]string) (map[string]string, error) {
 	clave := fmt.Sprintf("%s%s", row["site"], row["id"])
 

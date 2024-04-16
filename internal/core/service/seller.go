@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Implementing for /users API
 type SellerFetcher struct {
 	Path string
 }
@@ -17,6 +18,7 @@ type SellerResponse struct {
 	Nickname string `json:"nickname,omitempty"`
 }
 
+// Fetch executes call to /users then fills at SellerResponse
 func (sef SellerFetcher) Fetch(client *melihttp.Request, row map[string]string) (map[string]string, error) {
 	options := &melihttp.Options{
 		Method:   http.MethodGet,

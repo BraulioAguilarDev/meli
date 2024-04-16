@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Implementing for /currencies API
 type CurrencyFetcher struct {
 	Path string
 }
@@ -20,6 +21,7 @@ type CurrencyResponse struct {
 	DecimalPlaces int    `json:"decimal_places,omitempty"`
 }
 
+// Fetch executes call to /currencies then fills at CurrencyResponse
 func (cuf CurrencyFetcher) Fetch(client *melihttp.Request, row map[string]string) (map[string]string, error) {
 	options := &melihttp.Options{
 		Method:   http.MethodGet,
