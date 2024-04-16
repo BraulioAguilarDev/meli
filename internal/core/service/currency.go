@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	c "meli/internal/adapter/config"
 	"meli/pkg/melihttp"
 	"net/http"
 )
@@ -24,7 +25,7 @@ func (cuf CurrencyFetcher) Fetch(client *melihttp.Request, row map[string]string
 		Method:   http.MethodGet,
 		Endpoint: fmt.Sprintf("%s/%s", cuf.Path, row["currency_id"]),
 		Headers: map[string]string{
-			"Authorization": "Bearer APP_USR-7032346726927327-041520-c3f86dcd27a37a83df54a11a1ecf28b2-654966372",
+			"Authorization": fmt.Sprintf("Bearer %s", c.Config.API.TOKEN),
 		},
 	}
 

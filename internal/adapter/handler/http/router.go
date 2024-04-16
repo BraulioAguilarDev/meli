@@ -12,10 +12,7 @@ type Router struct {
 	*gin.Engine
 }
 
-func NewRouter(
-	config *config.HTTP,
-	itemHandler ItemHdlr,
-) (*Router, error) {
+func NewRouter(config *config.HTTP, itemHandler ItemHdlr) (*Router, error) {
 	if config.Env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}

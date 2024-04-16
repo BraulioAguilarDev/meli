@@ -20,7 +20,6 @@ func NewClient() *Request {
 	}
 }
 
-// Request struct
 type Request struct {
 	Client *http.Client
 }
@@ -39,7 +38,6 @@ func (r *Request) MakeRequest(o *Options) (*http.Response, error) {
 
 	q := req.URL.Query()
 	req.URL.RawQuery = q.Encode()
-	// req.Header.Set("Content-Type", "application/json")
 
 	res, err := r.Client.Do(req)
 	if err != nil {

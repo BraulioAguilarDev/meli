@@ -5,13 +5,11 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
-	"log"
+	c "meli/internal/adapter/config"
 	"meli/internal/core/domain"
 	"meli/internal/core/port"
 	"meli/pkg/melihttp"
 	"sync"
-
-	"github.com/shopspring/decimal"
 )
 
 var (
@@ -20,12 +18,11 @@ var (
 
 type baseService struct {
 	repository port.ItemResopitory
-	url        string
 }
 
-func ProvideBaseService(repo port.ItemResopitory, url string) *baseService {
+func ProvideBaseService(repo port.ItemResopitory) *baseService {
 	return &baseService{
-		repo, url,
+		repo,
 	}
 }
 
@@ -34,7 +31,6 @@ func (srv *baseService) CreateItem(ctx context.Context, item *domain.Item) (*dom
 }
 
 func (srv *baseService) UploadFile(ctx context.Context, uploadFile *domain.UploadFile) error {
-	// TODO: multiple formats support
 	if uploadFile.File.Header.Get("Content-Type") != "text/csv" {
 		return errors.New("file is not a CSV file")
 	}
@@ -66,28 +62,39 @@ func (srv *baseService) UploadFile(ctx context.Context, uploadFile *domain.Uploa
 }
 
 func (srv *baseService) Queries(ctx context.Context, rows []domain.Row) error {
-	// Call external services
 	fetchers := []port.QueryFetcher{
-		CategoryFetcher{fmt.Sprintf("%s/categories", srv.url)},
-		CurrencyFetcher{fmt.Sprintf("%s/currencies", srv.url)},
-		SellerFetcher{fmt.Sprintf("%s/users", srv.url)},
-		// Adds other services...
+		CategoryFetcher{fmt.Sprintf("%s/categories", c.Config.API.URL)},
+		CurrencyFetcher{fmt.Sprintf("%s/currencies", c.Config.API.URL)},
+		SellerFetcher{fmt.Sprintf("%s/users", c.Config.API.URL)},
 	}
 
-	ch := make(chan domain.Item, MaxConcurrency)
+	itmCh := make(chan domain.Item, MaxConcurrency)
+	errCh := make(chan error)
 	client := melihttp.NewClient()
 
-	go fetchURL(rows, fetchers, ch, client, srv.url)
+	go fetchURL(rows, fetchers, itmCh, errCh, client)
 
-	for item := range ch {
-		fmt.Println("Item for saving:", item)
+	for {
+		select {
+		case result, ok := <-itmCh:
+			if !ok {
+				return nil
+			}
+			_, err := srv.repository.CreateItem(ctx, &result)
+			if err != nil {
+				fmt.Printf("creatting item in db error: %v\n", err.Error())
+			}
+		case err, ok := <-errCh:
+			if !ok {
+				return nil
+			}
+			fmt.Println("Error:", err)
+		}
 	}
-
-	return nil
 }
 
-func fetchURL(rows []domain.Row, fetchers []port.QueryFetcher, ch chan domain.Item, client *melihttp.Request, apiURL string) {
-	defer close(ch)
+func fetchURL(rows []domain.Row, fetchers []port.QueryFetcher, itmCh chan domain.Item, errCh chan error, client *melihttp.Request) {
+	defer close(itmCh)
 
 	sem := make(chan struct{}, MaxConcurrency)
 	var wg sync.WaitGroup
@@ -102,36 +109,36 @@ func fetchURL(rows []domain.Row, fetchers []port.QueryFetcher, ch chan domain.It
 				<-sem
 			}()
 
-			// Getting item data
+			// Getting main data
 			req := &ItemFetcher{
-				fmt.Sprintf("%s/items", apiURL),
+				fmt.Sprintf("%s/items", c.Config.API.URL),
 			}
 
+			fmt.Printf("Getting item from %s with ID: %v\n", c.Config.API.URL, row.ID)
 			response, err := req.Fetch(client, map[string]string{
 				"site": row.Site, "id": row.ID,
 			})
 			if err != nil {
-				log.Printf("fetching item error: %v", err)
+				errCh <- err
 			}
 
-			price, _ := decimal.NewFromString(response["price"])
 			result := domain.Item{
 				ID:        row.ID,
 				Site:      row.Site,
 				StartTime: response["date_created"],
-				Price:     price,
+				Price:     response["price"],
 			}
 
 			for _, f := range fetchers {
 				res, err := f.Fetch(client, response)
 				if err != nil {
-					log.Printf("fetching error: %v\n", err)
+					errCh <- err
 				}
 
 				filling(res, &result)
 			}
 
-			ch <- result
+			itmCh <- result
 		}(row)
 	}
 

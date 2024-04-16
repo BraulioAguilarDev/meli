@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"meli/internal/core/domain"
+	"strconv"
 )
 
 type itemRepository struct {
@@ -16,11 +17,11 @@ func NewItemRepository(queries *Queries) *itemRepository {
 }
 
 func (repo *itemRepository) CreateItem(ctx context.Context, item *domain.Item) (*domain.Item, error) {
-
+	id, _ := strconv.Atoi(item.ID)
 	_, err := repo.queries.CreateItem(ctx, CreateItemParams{
-		ID:          item.ID,
+		ID:          id,
 		Site:        item.Site,
-		Price:       item.Price.String(),
+		Price:       item.Price,
 		SmartTime:   item.StartTime,
 		Name:        item.Name,
 		Description: item.Description,

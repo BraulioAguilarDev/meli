@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	c "meli/internal/adapter/config"
 	"meli/pkg/melihttp"
 	"net/http"
 )
@@ -13,7 +14,7 @@ type SellerFetcher struct {
 }
 
 type SellerResponse struct {
-	Nickname string `json:"nickname"`
+	Nickname string `json:"nickname,omitempty"`
 }
 
 func (sef SellerFetcher) Fetch(client *melihttp.Request, row map[string]string) (map[string]string, error) {
@@ -21,7 +22,7 @@ func (sef SellerFetcher) Fetch(client *melihttp.Request, row map[string]string) 
 		Method:   http.MethodGet,
 		Endpoint: fmt.Sprintf("%s/%s", sef.Path, row["seller_id"]),
 		Headers: map[string]string{
-			"Authorization": "Bearer APP_USR-7032346726927327-041520-c3f86dcd27a37a83df54a11a1ecf28b2-654966372",
+			"Authorization": fmt.Sprintf("Bearer %s", c.Config.API.TOKEN),
 		},
 	}
 

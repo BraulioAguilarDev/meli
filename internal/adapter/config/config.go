@@ -1,10 +1,13 @@
 package config
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 )
+
+var Config *Container
 
 type (
 	App struct {
@@ -23,22 +26,23 @@ type (
 		AllowedOrigins string
 	}
 
+	API struct {
+		URL   string
+		TOKEN string
+	}
+
 	Container struct {
 		App  *App
 		DB   *DB
 		HTTP *HTTP
-		Meli *Meli
-	}
-
-	Meli struct {
-		URL string
+		API  *API
 	}
 )
 
-func New() (*Container, error) {
+func init() {
 	if os.Getenv("APP_ENV") != "production" {
 		if err := godotenv.Load(); err != nil {
-			return nil, err
+			log.Fatal(err)
 		}
 	}
 
@@ -58,11 +62,12 @@ func New() (*Container, error) {
 		AllowedOrigins: os.Getenv("HTTP_ALLOWED_ORIGINS"),
 	}
 
-	meli := &Meli{
-		URL: "https://api.mercadolibre.com",
+	api := &API{
+		URL:   os.Getenv("MELI_API"),
+		TOKEN: os.Getenv("MELI_TOKEN"),
 	}
 
-	return &Container{
-		app, db, http, meli,
-	}, nil
+	Config = &Container{
+		app, db, http, api,
+	}
 }

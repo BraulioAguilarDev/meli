@@ -19,7 +19,7 @@ RETURNING id, site, price, smart_time, name, description, nickname
 `
 
 type CreateItemParams struct {
-	ID          string
+	ID          int
 	Site        string
 	Price       string
 	SmartTime   string

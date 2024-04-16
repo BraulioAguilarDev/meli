@@ -5,7 +5,7 @@
 package repository
 
 type Item struct {
-	ID          string
+	ID          int
 	Site        string
 	Price       string
 	SmartTime   string

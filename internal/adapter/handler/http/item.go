@@ -12,10 +12,7 @@ type ItemHdlr struct {
 	service port.ItemService
 }
 
-func ProvideItemHandler(
-	service port.ItemService,
-
-) *ItemHdlr {
+func ProvideItemHandler(service port.ItemService) *ItemHdlr {
 	return &ItemHdlr{
 		service,
 	}
@@ -29,18 +26,16 @@ func (ih *ItemHdlr) UploadFile(ctx *gin.Context) {
 	var request uploadFileRequest
 
 	if err := ctx.ShouldBind(&request); err != nil {
-		// tmp
-		ctx.AbortWithError(400, err)
+		Failure(ctx, err.Error())
 		return
 	}
 
 	if err := ih.service.UploadFile(ctx, &domain.UploadFile{
 		File: request.File,
 	}); err != nil {
-		// tmp
-		ctx.AbortWithError(400, err)
+		Failure(ctx, err.Error())
 		return
 	}
 
-	ctx.JSON(200, "success")
+	Success(ctx, "File has been processed successfully")
 }

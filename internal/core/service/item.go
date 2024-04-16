@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	c "meli/internal/adapter/config"
 	"meli/pkg/melihttp"
 	"net/http"
 	"time"
@@ -17,12 +18,12 @@ type ItemFetcher struct {
 type ItemResponse struct {
 	Code int `json:"code"`
 	Body struct {
-		ID          string    `json:"id"`
-		Price       float64   `json:"price"`
-		DateCreated time.Time `json:"date_created"` // smart_date key doesn't exists
-		SellerID    int       `json:"seller_id"`
-		CategoryID  string    `json:"category_id"`
-		CurrencyID  string    `json:"currency_id"`
+		ID          string    `json:"id,omitempty"`
+		Price       float64   `json:"price,omitempty"`
+		DateCreated time.Time `json:"date_created,omitempty"` // smart_date key doesn't exists
+		SellerID    int       `json:"seller_id,omitempty"`
+		CategoryID  string    `json:"category_id,omitempty"`
+		CurrencyID  string    `json:"currency_id,omitempty"`
 	}
 }
 
@@ -33,7 +34,7 @@ func (itf ItemFetcher) Fetch(client *melihttp.Request, row map[string]string) (m
 		Method:   http.MethodGet,
 		Endpoint: fmt.Sprintf("%s?ids=%s", itf.Path, clave),
 		Headers: map[string]string{
-			"Authorization": "Bearer APP_USR-7032346726927327-041520-c3f86dcd27a37a83df54a11a1ecf28b2-654966372",
+			"Authorization": fmt.Sprintf("Bearer %s", c.Config.API.TOKEN),
 		},
 	}
 
