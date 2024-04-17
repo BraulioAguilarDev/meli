@@ -30,7 +30,7 @@ func ProvideBaseService(repo port.ItemResopitory) *baseService {
 	}
 }
 
-// CreateItem saves a item
+// CreateItem saves an item
 func (srv *baseService) CreateItem(ctx context.Context, item *domain.Item) (*domain.Item, error) {
 	return srv.repository.CreateItem(ctx, item)
 }

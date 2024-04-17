@@ -5,6 +5,8 @@ import (
 	"meli/internal/core/domain"
 )
 
+//go:generate mockgen -source=item.go -destination=mock/item.go -package=mock
+
 // ItemResopitory is an interface for interacting with item-related data
 type ItemResopitory interface {
 	CreateItem(context.Context, *domain.Item) (*domain.Item, error)

@@ -27,7 +27,7 @@ func (f Format) String() string {
 	}
 }
 
-// FileReader is an interface for interacting with file process acording ext file
+// FileReader is an interface for interacting with file process according ext file
 type FileReader interface {
 	Read() ([][]string, error)
 }
