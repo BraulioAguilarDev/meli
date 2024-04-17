@@ -1,5 +1,11 @@
 version: "3.8"
 
+x-common-variables: &common-variables
+  POSTGRES_DB: meli
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password
+  POSTGRES_PORT: 5432
+
 services:
   postgres:
     image: postgres:latest
@@ -8,8 +14,7 @@ services:
       - "5432:5432"
     expose:
       - "5432"
-    environment:
-      - DB_DSN=${DB_DSN}
+    environment: *common-variables
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres -d meli" ]
       interval: 10s
@@ -18,12 +23,15 @@ services:
     volumes:
       - pg_meli_data:/var/lib/postgresql/data/
   meli:
-    image: meli
+    image: meli:latest
     container_name: api.meli.com
+    restart: on-failure
     env_file:
       - .env
     ports:
       - "8080:8080"
+    depends_on:
+      - postgres
   
 networks:
   default:

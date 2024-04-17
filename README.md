@@ -37,12 +37,11 @@ $ git clone git@github.com:BraulioAguilarDev/meli.git
 # Position in meli folder
 $ cp .env.example .env # update MELI_TOKEN
 
-# Mandatory commands
-$ make docker && make dc-up
+# Building meli image
+$ make docker
 
-# Call upload file endpoint
-$ curl --location 'http://localhost:8080/v1/items/upload-file' \
---form 'file=@"$(pwd)/meli/technical_challenge_data.csv"'
+# Starting api
+$ make dc-up
 ```
 
 ### Request by Postman/Insomnia
