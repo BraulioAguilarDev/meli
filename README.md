@@ -3,13 +3,17 @@
 ## General aspects
 This project follows the hexagonal architecture and implements a `QueryFetcher` mechanism for getting additional information from external services using Goroutines.
 
-## Tools
+### Theoretical
+
+Go to this [link](/theoretical_exercise/README.md) for reading
+
+
+## Tools project
 - [Gin - Web framework ](https://gin-gonic.com/) 
 - [Sqlc - SQL query builder](https://sqlc.dev/)
 - [Postgresql - SQL Engine](https://https://www.postgresql.org/)
 - [Docker](https://docs.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- [DBeaver - SQL client](https://dbeaver.io/)
 
 ## Build project
 ```sh
@@ -67,8 +71,12 @@ $ make dc-up
 }
 ```
 
-## Example run testing
+### Example run testing
 
 ```sh
 $ go test ./internal/adapter/storage/postgres/... -count=1
 ```
+
+### File examples
+
+You can find [files](/assets/files/) allowed in this project (csv, xml, txt)
