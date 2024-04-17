@@ -36,7 +36,7 @@ $ make dc-down
 ## Test code
 
 ```sh
-$ git clone git@github.com:BraulioAguilarDev/meli.git
+$ git clone https://github.com/BraulioAguilarDev/meli.git
 
 # Position in meli folder
 $ cp .env.example .env # update MELI_TOKEN
