@@ -38,7 +38,7 @@ $ git clone git@github.com:BraulioAguilarDev/meli.git
 $ cp .env.example .env # update MELI_TOKEN
 
 # Mandatory commands
-$ make build && make dc-up
+$ make docker && make dc-up
 
 # Call upload file endpoint
 $ curl --location 'http://localhost:8080/v1/items/upload-file' \
