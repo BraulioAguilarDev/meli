@@ -66,3 +66,9 @@ $ make dc-up
     "message": "some error message"
 }
 ```
+
+## Example run testing
+
+```sh
+$ go test ./internal/adapter/storage/postgres/... -count=1
+```
